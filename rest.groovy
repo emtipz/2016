@@ -6,12 +6,13 @@ import groovy.io.FileType
 import groovy.json.JsonSlurper
 
 //Translation list 
-def country = [France:'Frankrike', 'Northern Ireland': 'Nordirland']
+def country = [France:'Frankrike', 'Northern Ireland': 'Nordirland', Sweden: 'Zverige', Belgium: 'Belgien', Italy: 'Italien', 'Republic of Ireland': 'Irland', Hungary: 'Ungern', Iceland: 'Island', Austria: 'Österrike', Croatia: 'Kroatien', Spain: 'Spanien', Turkey: 'Turkiet', 'Czech Republic': 'Tjeckien', Germany: 'Tyskland', Poland: 'Polen', Ukraine: 'Ukraina', Russia: 'Ryssland', Slovakia: 'Slovakien', Switzerland: 'Schweiz', Albania: 'Albanien', Romania: 'Rumänien']
 //Read up the teams for the playoffs to count the points 
 def config = new ConfigSlurper().parse(new File('playoff.groovy').toURL())
 
 
 def client = new RESTClient("http://api.football-data.org/v1/")
+/*
 def response = client.get( path:'/soccerseasons/424/fixtures',
                            accept: ContentType.JSON,
                            headers:["X-Auth-Token":"58e96927bea04cb2a36c3930ed1a2c7d"],
@@ -21,7 +22,7 @@ def response = client.get( path:'/soccerseasons/424/fixtures',
                            useCaches: false,
                            sslTrustAllCerts: true )
 
-
+*/
 def facit = [:]						   
 int rowRest = 1
 
@@ -43,10 +44,10 @@ object.fixtures.each { row ->
 	facit.put(rowRest, matchResult)
 	rowRest++
 } 
-Tipz tipz = new Tipz()
+def allTipz=[]
 new File("users").eachFile() { file->  
 	String fileName =  file.getName().split("\\.")[0]
-	
+	Tipz tipz = new Tipz()
 	tipz.userName = fileName
 	def data = parseCsv(file.getText('ISO-8859-1'))
 	int row = 1
@@ -74,7 +75,8 @@ new File("users").eachFile() { file->
 			}
 			
 			row++
-		}	
+		}
+	allTipz.add(tipz)
 }
 
 def addMatchResults(def thisPlayRound, def thisHomeTeam, def thisAwayTeam, def thisHomeScore, def thisAwayScore){		
@@ -91,19 +93,179 @@ def addMatchResults(def thisPlayRound, def thisHomeTeam, def thisAwayTeam, def t
 }
 
 
-def userPointPerRound=[:]
-tipz.each{
-	println it.userName
-	it.results.each{ game->
-		println "INFO: $game.homeTeam - $game.awayTeam: $game.homeScore - $game.awayScore"
-		// from config we set what games that has been played. 
-		if (game.playRound < config.playedRounds) {
-			Calculator.pointz(game, facit.get(game.playRound))
+def perMatchResult=[:]
+allTipz.each{ tipz->
+
+	tipz.each {
+		println it.userName
+		it.results.each{ game->
+			//println "INFO: $game.homeTeam - $game.awayTeam: $game.homeScore - $game.awayScore"
+			// from config we set what games that has been played. 
+			if (game.playRound < config.playedRounds) {
+				perMatchResult.put(name: it.userName, round:game.playRound , hometeam: game.homeTeam, awayteam: game.awayTeam, Calculator.pointz(game, facit.get(game.playRound)))
+				
+			}
 		}
 	}
 }
 
 
+def writer = new FileWriter('EM2016.html')
+def src = new groovy.xml.MarkupBuilder(writer)
+src.html {
+  head {
+    title 'Forza South EM Tipz'
+  }
+  meta (charset:"UTF-8")
+  body {
+    
+  }
+  script(src: 'sorttable.js'){mkp.yield("")}
+
+  style (""" 
+/* 
+Enfo colors
+blue: #225E9B;
+orange: #FBFBFB; 
+gray: #FFFFFF;
+
+*/
+body {
+  background-image:url('img/em.png');
+}
+body, table, form, input, td, th, p, textarea, select{
+  font-family: "Trebuchet MS", Trebuchet, Candara, Arial, Helvetica, Sans-Serif;
+  font-size: 12px;
+
+}  
+div.row {
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    width: 98.5%;
+}
+div.cols2 {
+    float: left;
+    margin: 0 3px 0 0;
+    padding: 0;
+    width: 49%;
+}    
+                             
+
+th {
+ background-color: #EEEEEE;
+ border: 1px solid #CCCCCC;
+ color: #555555;
+ padding: 8px;
+ text-align: center;
+}
+ th test{
+background-color: #FFFFFFF;
+}
+table.middle {
+ margin-left:auto; 
+    margin-right:auto;
+}
+tbody.tuff th {
+padding: 0px;
+}
+table {
+ border-collapse: collapse;
+ border-spacing: 0;
+}
+table.left{
+float: left;
+   margin-left:auto; 
+    margin-right:auto;
+}
+table.right{
+float: right;
+   margin-left:auto; 
+    margin-right:auto;
+}
+td {
+ border: 1px solid #CCCCCC;
+ padding: 5px 10px;
+ vertical-align: top;
+  background-color: #FFF;
+}
+
+caption {
+ text-align: center;
+ height: 80px; 
+ color: #225E9B; 
+ font-size: 20px; 
+ background-color: #EFEFEF;
+ border: 1px solid #CCCCCC;
+ border-bottom: none;
+ font-weight: bold;
+ padding: 10px;}""")
+ 
+    table (class: 'right') {
+	tr {
+		th ('Match')
+		th ('Resultat')
+	}
+	/*
+		String dateToPlay
+		Integer playRound 
+		String homeTeam
+		String awayTeam
+		String homeScore
+		String awayScore
+	*/
+	facit.each{ matchScore->
+		tr {
+			td ("${matchScore.key}. ${matchScore.value.homeTeam} - ${matchScore.value.awayTeam}")
+			if (matchScore.value.homeScore.toInteger() < 0) {
+				td ("N/P")
+			} else {
+				td ("${matchScore.value.homeScore} - ${matchScore.value.awayScore}")
+			}
+		
+		}
+	}
+  
+  }
+  
+  table (class:'middle'){ 
+	//Calculator.pointz(game, facit.get(game.playRound))
+	caption 'ENFO - Forza South EM Tipz'
+	thead {	tr { th() 
+		def allName = perMatchResult.collect { it.key.name }.unique()
+					
+					allName.each {
+					
+						td(it)
+					}
+				
+				}
+			}
+	tbody {tr{th(scope:'rowgroup', colspan:'100%' , class: 'tuff'){mkp.yield("Poäng per match")}}
+			
+			def thisgames = ''
+			perMatchResult.collect { it.key.round }.unique().sort().each{ match ->
+				
+					perMatchResult.find{it.key.round == match}.each { 
+						thisgames = it.key.round + '. ' + it.key.hometeam + ' - ' + it.key.awayteam
+						tr{ th(thisgames) {
+							perMatchResult.findAll{it.key.round == match}.each {	
+									
+									
+									td (it.value)
+							}
+								}
+							}						
+						}
+					 
+				
+				
+					}
+				
+				}	
+	}
+
+  }
 
 class Calculator {
 /*
@@ -120,14 +282,17 @@ Poängfördelning slutspel
 */
 	
    static pointz(MatchResult user, MatchResult facit){
-		Integer pointz 
+		Integer pointz = 0
 		if (user.matchResult() == facit.matchResult()) {
 			pointz = roundPoint(user.playRound, '1X2')
 			if(user.homeScore == facit.homeScore && user.awayScore == facit.awayScore){
 				pointz += roundPoint(user.playRound, 'score')
 			}
-			println "INFO: Pointz: " + pointz + ' For player round: ' + user.playRound
+			
+			
 		}
+			
+		return pointz
    }
    static playoffPoints(List userPlayOffTeams, List facitPlayOffTeams, String playoff) {
 		def commons = userPlayOffTeams.intersect(facitPlayOffTeams)
