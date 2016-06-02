@@ -5,7 +5,12 @@ import groovy.xml.*
 import groovy.io.FileType
 import groovy.json.JsonSlurper
 
+//Translation list 
 def country = [France:'Frankrike', 'Northern Ireland': 'Nordirland']
+//Read up the teams for the playoffs to count the points 
+def config = new ConfigSlurper().parse(new File('playoff.groovy').toURL())
+
+
 def client = new RESTClient("http://api.football-data.org/v1/")
 def response = client.get( path:'/soccerseasons/424/fixtures',
                            accept: ContentType.JSON,
@@ -47,21 +52,42 @@ new File("users").eachFile() { file->
 	int row = 1
 		data.each { line ->
 			if (row > 8 && row < 15) {
-				MatchResult match = new MatchResult()
-				match.with {
-				
-					playRound = line."Grupp A - Tabell".toInteger()
-					homeTeam = line.HemmaLag
-					awayTeam = line.BortaLag
-					homeScore = line.HemmaScore
-					awayScore = line.BortaScore
-				}
-				tipz.results.add(match)
-					
+				tipz.results.add(addMatchResults(line."Grupp A - Tabell",line.HemmaLag,line.BortaLag,line.HemmaScore,line.BortaScore))
+				tipz.results.add(addMatchResults(line."Grupp B - Tabell",line.HemmaLag2,line.BortaLag2,line.HemmaScore2,line.BortaScore2))
+			}
+			if (row>25 && row < 32) {
+				tipz.results.add(addMatchResults(line."Grupp A - Tabell",line.HemmaLag,line.BortaLag,line.HemmaScore,line.BortaScore))
+				tipz.results.add(addMatchResults(line."Grupp B - Tabell",line.HemmaLag2,line.BortaLag2,line.HemmaScore2,line.BortaScore2))
+			}
+			if (row>42 && row < 49) {
+				tipz.results.add(addMatchResults(line."Grupp A - Tabell",line.HemmaLag,line.BortaLag,line.HemmaScore,line.BortaScore))
+				tipz.results.add(addMatchResults(line."Grupp B - Tabell",line.HemmaLag2,line.BortaLag2,line.HemmaScore2,line.BortaScore2))
+			}
+			if (row>52 && row < 61) {
+				tipz.results.add(addMatchResults(line."Grupp B - Tabell",line.HemmaLag2,line.BortaLag2,line.HemmaScore2,line.BortaScore2))
+			}
+			if (row>64 && row<67) {
+				tipz.results.add(addMatchResults(line."Grupp B - Tabell",line.HemmaLag2,line.BortaLag2,line.HemmaScore2,line.BortaScore2))
+			}
+			if (row>71 && row<73) {
+				tipz.results.add(addMatchResults(line."Grupp B - Tabell",line.HemmaLag2,line.BortaLag2,line.HemmaScore2,line.BortaScore2))
 			}
 			
 			row++
 		}	
+}
+
+def addMatchResults(def thisPlayRound, def thisHomeTeam, def thisAwayTeam, def thisHomeScore, def thisAwayScore){		
+	MatchResult match = new MatchResult()
+		match.with {
+			playRound = thisPlayRound.toInteger()
+			homeTeam = thisHomeTeam.trim()
+			awayTeam = thisAwayTeam.trim()
+			homeScore = thisHomeScore
+			awayScore = thisAwayScore
+		}
+		
+		return match
 }
 
 
@@ -69,9 +95,11 @@ def userPointPerRound=[:]
 tipz.each{
 	println it.userName
 	it.results.each{ game->
-	MatchResult test = facit.get(game.playRound)
-	
-	    Calculator.pointz(game, facit.get(game.playRound))
+		println "INFO: $game.homeTeam - $game.awayTeam: $game.homeScore - $game.awayScore"
+		// from config we set what games that has been played. 
+		if (game.playRound < config.playedRounds) {
+			Calculator.pointz(game, facit.get(game.playRound))
+		}
 	}
 }
 
@@ -98,13 +126,23 @@ Poängfördelning slutspel
 			if(user.homeScore == facit.homeScore && user.awayScore == facit.awayScore){
 				pointz += roundPoint(user.playRound, 'score')
 			}
-			println "Pointz: " + pointz + 'For player round: ' + user.playRound
-		} else {
-			println "Inte korrekt resultat"
+			println "INFO: Pointz: " + pointz + ' For player round: ' + user.playRound
 		}
    }
-   static roundPoint(Integer playRound, String type) {
-	
+   static playoffPoints(List userPlayOffTeams, List facitPlayOffTeams, String playoff) {
+		def commons = userPlayOffTeams.intersect(facitPlayOffTeams)
+		if (playoff=='eighth') {
+			return commons.size().toInteger() * 2
+		}else if (playoff=='qurter') {
+			return commons.size().toInteger() * 3
+		}else if (playoff=='semi') {
+			return commons.size().toInteger() * 4
+		} else {
+			return commons.size().toInteger() * 5
+		}
+   
+   }
+   static roundPoint(Integer playRound, String type) {	
 	if (playRound < 36) {
 		if (type == '1X2') {
 			return 1
@@ -150,23 +188,21 @@ class MatchResult {
 		return  playRound + ' - ' +homeTeam +  " - " + awayTeam + ' : ' + matchResult()
 	}
 	
-	
 	String matchResult() {
 		if (homeScore.toInteger() < 0) {
 			return 'N/P'
 		} else {
-		if (homeScore.toInteger() > awayScore.toInteger()) {
-			return '1'
-		} else if (homeScore.toInteger() == awayScore.toInteger()) {
-			return 'X'
-		} else {
-			return '2'
-		}
+			if (homeScore.toInteger() > awayScore.toInteger()) {
+				return '1'
+			} else if (homeScore.toInteger() == awayScore.toInteger()) {
+				return 'X'
+			} else {
+				return '2'
+			}
 		}
 	}
 
 } 
-
 class Tipz {
 	String userName
 	List<MatchResult> results = []
