@@ -94,15 +94,22 @@ def addMatchResults(def thisPlayRound, def thisHomeTeam, def thisAwayTeam, def t
 
 
 def perMatchResult=[:]
+def playerPoints = [:]
 allTipz.each{ tipz->
 
 	tipz.each {
-		println it.userName
+		def thisUserName = it.userName
+		playerPoints.put(name: thisUserName, 0)
+		println "INFO: Calculating for player: $thisUserName"
 		it.results.each{ game->
 			//println "INFO: $game.homeTeam - $game.awayTeam: $game.homeScore - $game.awayScore"
 			// from config we set what games that has been played. 
+			int thisPointz = 0
 			if (game.playRound < config.playedRounds) {
-				perMatchResult.put(name: it.userName, round:game.playRound , hometeam: game.homeTeam, awayteam: game.awayTeam, Calculator.pointz(game, facit.get(game.playRound)))
+				thisPointz=Calculator.pointz(game, facit.get(game.playRound))
+				perMatchResult.put(name: thisUserName, round:game.playRound , hometeam: game.homeTeam, awayteam: game.awayTeam,thisPointz )
+				
+				playerPoints.find{it.key.name == thisUserName}.each{it.value += thisPointz}
 				
 			}
 		}
@@ -201,6 +208,23 @@ caption {
  font-weight: bold;
  padding: 10px;}""")
  
+   table (class: 'left') {
+	tr {
+		th ('Namn')
+		th ('Poäng')
+	}
+	int nums = 1
+	playerPointsSort = playerPoints.sort{-it.value}
+	playerPointsSort.each{ topPlayer->
+		tr {
+			td ("${nums}. ${topPlayer.key.name}")
+			td(topPlayer.value)
+		nums++
+		}
+	}
+  
+  }
+ 
     table (class: 'right') {
 	tr {
 		th ('Match')
@@ -262,7 +286,19 @@ caption {
 				
 					}
 				
-				}	
+				}
+		tbody {tr{th(scope:'rowgroup', colspan:'100%'){mkp.yield("Totalt")}}
+			tr{th('Totalt') 
+			playerPoints.each {
+				
+					td (it.value)
+					}
+			}
+				
+		
+				
+			
+		}				
 	}
 
   }
