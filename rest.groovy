@@ -32,17 +32,20 @@ int rowRest = 1
 response.json.fixtures.each { row ->
 
 	MatchResult matchResult = new MatchResult()
+	
 	matchResult.with{	
 		dateToPlay = Date.parse( "yyyy-MM-dd'T'HH:mm:ss'Z'", row.date ).format( 'MM/dd HH:mm:ss' )
 		playRound = rowRest
 		homeTeam = country.get(row.homeTeamName) ?: row.homeTeamName
 		awayTeam = country.get(row.awayTeamName) ?: row.awayTeamName
-		homeScore = row.result.goalsHomeTeam 
-		awayScore = row.result.goalsAwayTeam 
+		homeScore = row.result.goalsHomeTeam as String
+		awayScore = row.result.goalsAwayTeam as String
 	}
+	
 	facit.put(rowRest, matchResult)
 	rowRest++
 } 
+
 def allTipz=[]
 new File("users").eachFile() { file->  
 	String fileName =  file.getName().split("\\.")[0]
@@ -95,7 +98,6 @@ def addMatchResults(def thisPlayRound, def thisHomeTeam, def thisAwayTeam, def t
 def perMatchResult=[:]
 def playerPoints = [:]
 allTipz.each{ tipz->
-
 	tipz.each {
 		def thisUserName = it.userName
 		playerPoints.put(name: thisUserName, 0)
@@ -116,7 +118,7 @@ allTipz.each{ tipz->
 }
 
 
-def writer = new FileWriter('EM2016.html')
+def writer = new FileWriter('index.html')
 def src = new groovy.xml.MarkupBuilder(writer)
 src.html {
   head {
@@ -318,6 +320,7 @@ Poängfördelning slutspel
 	
    static pointz(MatchResult user, MatchResult facit){
 		Integer pointz = 0
+		
 		if (user.matchResult() == facit.matchResult()) {
 			pointz = roundPoint(user.playRound, '1X2')
 			if(user.homeScore == facit.homeScore && user.awayScore == facit.awayScore){
@@ -369,19 +372,23 @@ class MatchResult {
 	String awayScore
 	
 	void setHomeScore(def score){
-		if (score == null) {
+		
+		if (score == 'null') {
 		  homeScore = '-1'
 		 } else {
 			homeScore = score
 		 }
+		
 	}
 	 
 	void setAwayScore(def score){
-		if (score == null) {
-		  awayScore = '-1'
+		
+		if (score == 'null') {
+		   awayScore = '-1'
 		 } else {
 			awayScore = score
 		 }
+		
 	}
 	
 	String toString(){
