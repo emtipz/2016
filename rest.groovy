@@ -12,7 +12,7 @@ def config = new ConfigSlurper().parse(new File('playoff.groovy').toURL())
 
 
 def client = new RESTClient("http://api.football-data.org/v1/")
-/*
+
 def response = client.get( path:'/soccerseasons/424/fixtures',
                            accept: ContentType.JSON,
                            headers:["X-Auth-Token":"58e96927bea04cb2a36c3930ed1a2c7d"],
@@ -22,15 +22,14 @@ def response = client.get( path:'/soccerseasons/424/fixtures',
                            useCaches: false,
                            sslTrustAllCerts: true )
 
-*/
+
 def facit = [:]						   
 int rowRest = 1
+//For testing
+//def jsonSlurper = new JsonSlurper()
+//def object = jsonSlurper.parseText(new File('fixtures.json').text)
 
-def jsonSlurper = new JsonSlurper()
-def object = jsonSlurper.parseText(new File('fixtures.json').text)
-
-//response.json
-object.fixtures.each { row ->
+response.json.fixtures.each { row ->
 
 	MatchResult matchResult = new MatchResult()
 	matchResult.with{	
