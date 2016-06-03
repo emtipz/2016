@@ -124,7 +124,7 @@ src.html {
   head {
     title 'Forza South EM Tipz'
   }
-  meta ()
+  meta (charset:"ISO-8859-1")
   body {
     
   }
