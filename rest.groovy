@@ -255,7 +255,7 @@ caption {
   
   table (class:'middle'){ 
 	//Calculator.pointz(game, facit.get(game.playRound))
-	caption 'ENFO - Forza South EM Tipz'
+	caption 'Forza South EM Tipz'
 	thead {	tr { th() 
 		def allName = perMatchResult.collect { it.key.name }.unique()
 					
