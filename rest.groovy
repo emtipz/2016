@@ -6,7 +6,7 @@ import groovy.io.FileType
 import groovy.json.JsonSlurper
 
 //Translation list 
-def country = [France:'Frankrike', 'Northern Ireland': 'Nordirland', Sweden: 'Zverige', Belgium: 'Belgien', Italy: 'Italien', 'Republic of Ireland': 'Irland', Hungary: 'Ungern', Iceland: 'Island', Austria: 'Österrike', Croatia: 'Kroatien', Spain: 'Spanien', Turkey: 'Turkiet', 'Czech Republic': 'Tjeckien', Germany: 'Tyskland', Poland: 'Polen', Ukraine: 'Ukraina', Russia: 'Ryssland', Slovakia: 'Slovakien', Switzerland: 'Schweiz', Albania: 'Albanien', Romania: 'Rumänien']
+def country = [France:'Frankrike', 'Northern Ireland': 'Nordirland', Sweden: 'Zverige', Belgium: 'Belgien', Italy: 'Italien', 'Republic of Ireland': 'Irland', Hungary: 'Ungern', Iceland: 'Island', Austria: '�sterrike', Croatia: 'Kroatien', Spain: 'Spanien', Turkey: 'Turkiet', 'Czech Republic': 'Tjeckien', Germany: 'Tyskland', Poland: 'Polen', Ukraine: 'Ukraina', Russia: 'Ryssland', Slovakia: 'Slovakien', Switzerland: 'Schweiz', Albania: 'Albanien', Romania: 'Rum�nien']
 //Read up the teams for the playoffs to count the points 
 def config = new ConfigSlurper().parse(new File('playoff.groovy').toURL())
 
@@ -51,7 +51,7 @@ new File("users").eachFile() { file->
 	String fileName =  file.getName().split("\\.")[0]
 	Tipz tipz = new Tipz()
 	tipz.userName = fileName
-	def data = parseCsv(file.getText('ISO-8859-1'))
+	def data = parseCsv(file.getText())
 	int row = 1
 		data.each { line ->
 			if (row > 8 && row < 15) {
@@ -124,7 +124,7 @@ src.html {
   head {
     title 'Forza South EM Tipz'
   }
-  meta (charset:"UTF-8")
+  meta ()
   body {
     
   }
@@ -212,7 +212,7 @@ caption {
    table (class: 'left') {
 	tr {
 		th ('Namn')
-		th ('Poäng')
+		th ('Po�ng')
 	}
 	int nums = 1
 	playerPointsSort = playerPoints.sort{-it.value}
@@ -266,7 +266,12 @@ caption {
 				
 				}
 			}
-	tbody {tr{th(scope:'rowgroup', colspan:'100%' , class: 'tuff'){mkp.yield("Poäng per match")}}
+	tbody {
+			tr{
+				th(scope:'rowgroup', colspan:'100%' , class: 'tuff')
+					{mkp.yield("Po�ng per match")
+					}
+			  }
 			
 			def thisgames = ''
 			perMatchResult.collect { it.key.round }.unique().sort().each{ match ->
@@ -274,10 +279,10 @@ caption {
 					perMatchResult.find{it.key.round == match}.each { 
 						thisgames = it.key.round + '. ' + it.key.hometeam + ' - ' + it.key.awayteam
 						tr{ th(thisgames) {
-							perMatchResult.findAll{it.key.round == match}.each {	
+							perMatchResult.findAll{it.key.round == match}.each { player->	
 									
 									
-									td (it.value)
+									td (align: 'center') {mkp.yield(player.value)}
 							}
 								}
 							}						
@@ -290,9 +295,9 @@ caption {
 				}
 		tbody {tr{th(scope:'rowgroup', colspan:'100%'){mkp.yield("Totalt")}}
 			tr{th('Totalt') 
-			playerPoints.each {
+			playerPoints.each { playerPoint->
 				
-					td (it.value)
+					td (align: 'center'){mkp.yield(playerPoint.value)}
 					}
 			}
 				
@@ -306,11 +311,11 @@ caption {
 
 class Calculator {
 /*
-Poängfördelning gruppspel
+Po�ngfördelning gruppspel
 •	Rätt vinnare(1X2) 1p
 •	Rätt resultat 3p
 
-Poängfördelning slutspel 
+Po�ngfördelning slutspel 
 •	Rätt lag till slutspel 2p
 •	Åttondel - 2p/Lag, 1X2 2p, Resultat 6p
 •	Kvartsfinal - 3p/Lag, 1X2 2p, Resultat 6p
