@@ -117,7 +117,8 @@ allTipz.each{ tipz->
 	}
 }
 
-
+ 
+def updateDate = new Date().format("yyyy-MM-dd' 'HH:mm:ss")
 def writer = new FileWriter('index.html')
 def src = new groovy.xml.MarkupBuilder(writer)
 src.html {
@@ -252,10 +253,11 @@ caption {
 	}
   
   }
-  
+
   table (class:'middle'){ 
 	//Calculator.pointz(game, facit.get(game.playRound))
-	caption 'Forza South EM Tipz'
+	caption 'Forza South EM Tipz - ' + updateDate 
+	
 	thead {	tr { th() 
 		def allName = perMatchResult.collect { it.key.name }.unique()
 					
