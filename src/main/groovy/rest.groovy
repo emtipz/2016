@@ -5,7 +5,7 @@ import groovy.io.FileType
 import groovy.json.JsonSlurper
 
 //Translation list 
-def country = [France:'Frankrike', 'Northern Ireland': 'Nordirland', Sweden: 'Zverige', Belgium: 'Belgien', Italy: 'Italien', 'Republic of Ireland': 'Irland', Hungary: 'Ungern', Iceland: 'Island', Austria: 'Österrike', Croatia: 'Kroatien', Spain: 'Spanien', Turkey: 'Turkiet', 'Czech Republic': 'Tjeckien', Germany: 'Tyskland', Poland: 'Polen', Ukraine: 'Ukraina', Russia: 'Ryssland', Slovakia: 'Slovakien', Switzerland: 'Schweiz', Albania: 'Albanien', Romania: 'Rumänien']
+def country = [France:'Frankrike', 'Northern Ireland': 'Nordirland', Sweden: 'Zverige', Belgium: 'Belgien', Italy: 'Italien', 'Republic of Ireland': 'Irland', Hungary: 'Ungern', Iceland: 'Island', Austria: '&Ouml;sterrike', Croatia: 'Kroatien', Spain: 'Spanien', Turkey: 'Turkiet', 'Czech Republic': 'Tjeckien', Germany: 'Tyskland', Poland: 'Polen', Ukraine: 'Ukraina', Russia: 'Ryssland', Slovakia: 'Slovakien', Switzerland: 'Schweiz', Albania: 'Albanien', Romania: 'Rum&auml;nien']
 //Read up the teams for the playoffs to count the points 
 def config = new ConfigSlurper().parse(new File('playoff.groovy').toURL())
 
@@ -124,7 +124,7 @@ src.html {
   head {
     title 'Forza South EM Tipz'
   }
-  meta (charset:"ISO-8859-1")
+  meta (charset:"UTF-8")
   body {
     
   }
@@ -212,7 +212,7 @@ caption {
    table (class: 'left') {
 	tr {
 		th ('Namn')
-		th ('Poäng')
+		th { mkp.yieldUnescaped  'Po&auml;ng'}
 	}
 	int nums = 1
 	playerPointsSort = playerPoints.sort{-it.value}
@@ -241,7 +241,7 @@ caption {
 	*/
 	facit.each{ matchScore->
 		tr {
-			td ("${matchScore.key}. ${matchScore.value.homeTeam} - ${matchScore.value.awayTeam}")
+			td {mkp.yieldUnescaped "${matchScore.key}. ${matchScore.value.homeTeam} - ${matchScore.value.awayTeam}"}
 			if (matchScore.value.homeScore.toInteger() < 0) {
 				td ("N/P")
 			} else {
@@ -270,7 +270,7 @@ caption {
 	tbody {
 			tr{
 				th(scope:'rowgroup', colspan:'100%' , class: 'tuff')
-					{mkp.yield("Poäng per match")
+					{mkp.yieldUnescaped ("Po&auml;ng per match")
 					}
 			  }
 			
@@ -279,18 +279,15 @@ caption {
 				
 					perMatchResult.find{it.key.round == match}.each { 
 						thisgames = it.key.round + '. ' + it.key.hometeam + ' - ' + it.key.awayteam
-						tr{ th(thisgames) {
-							perMatchResult.findAll{it.key.round == match}.each { player->	
-									
-									
-									td (align: 'center') {mkp.yield(player.value)}
-							}
+						tr{ 
+							th { mkp.yieldUnescaped(thisgames.replaceAll("\\xE4","&auml;").replaceAll("\\xD6",'&Ouml;')) }
+								perMatchResult.findAll{it.key.round == match}.each { player->	
+										td (align: 'center') {mkp.yield(player.value)}
 								}
+								
 							}						
 						}
-					 
-				
-				
+			
 					}
 				
 				}
