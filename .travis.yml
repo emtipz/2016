@@ -4,9 +4,14 @@ jdk:
 script:
 - ./gradlew runScript
 
+before_script: 
+- git config --global user.email "travis@yml.se"
+- git config --global user.name "Travis"
+- git remote -v
+
 after_script:
 - git add .
-- git commit -m "updating outputs"
+- git commit -m "updating outputs" -user 
 - git push --all
 
 # whitelist
