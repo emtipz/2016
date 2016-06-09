@@ -11,8 +11,8 @@ before_script:
 
 after_script:
 - git add .
-- git commit -m "updating outputs" -user 
-- git push --all
+- git commit -m "updating outputs" 
+- git push origin gh-pages
 
 # whitelist
 branches:
