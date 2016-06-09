@@ -1,4 +1,3 @@
-@Grab('com.xlson.groovycsv:groovycsv:1.1')
 import wslite.rest.*
 import static com.xlson.groovycsv.CsvParser.parseCsv
 import groovy.xml.*
