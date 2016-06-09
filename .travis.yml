@@ -9,3 +9,9 @@ after_script:
 - git add .
 - git commit -m "updating outputs"
 - git push --all
+
+# whitelist
+branches:
+  only:
+    - master
+    - gh-pages
