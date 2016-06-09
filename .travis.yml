@@ -1,10 +1,9 @@
 language: groovy
 jdk:
-    - oraclejdk8
-
+- oraclejdk8
 script:
-    - ./gradlew runScript
-	
+- ./gradlew runScript
+
 after_script:
 - git add .
 - git commit -m "updating outputs"
