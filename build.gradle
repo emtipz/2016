@@ -1,6 +1,5 @@
 apply plugin: 'groovy'
 
- 
     repositories {
         mavenCentral()
     }
@@ -11,14 +10,12 @@ apply plugin: 'groovy'
 		compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.6'
 		
     }
-
 	
+	task runScript (dependsOn: 'classes', type: JavaExec) {
+		main = 'rest'
+		classpath = sourceSets.main.runtimeClasspath
+	}
 
-task runScript (dependsOn: 'classes', type: JavaExec) {
-    main = 'rest'
-    classpath = sourceSets.main.runtimeClasspath
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.11'
-}
+	task wrapper(type: Wrapper) {
+		gradleVersion = '2.11'
+	}
