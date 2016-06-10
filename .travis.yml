@@ -13,8 +13,7 @@ before_install:
 before_script: 
 - git config --global user.email "travis@yml.se"
 - git config --global user.name "Travis"
-- git remote remove origin
-- git remote add origin git@github.com:emtipz/2016.git
+- git remote add github git@github.com:emtipz/2016.git
 
 after_script:
 - git status
@@ -23,7 +22,7 @@ after_script:
 - chmod 600 deploy_key
 - eval `ssh-agent -s`
 - ssh-add deploy_key
-- git push origin gh-pages
+- git push github gh-pages
 
 # whitelist
 branches:
