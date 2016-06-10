@@ -11,18 +11,15 @@ before_install:
 - ssh-add deploy_key
 
 before_script: 
+- git remote add github git@github.com:emtipz/2016.git
 - git config --global user.email "travis@yml.se"
 - git config --global user.name "Travis"
-- git remote add github git@github.com:emtipz/2016.git
+- git checkout gh-pages
 
 after_script:
 - git status
 - git commit -am "updating outputs"
 - git status
-- chmod 600 deploy_key
-- eval `ssh-agent -s`
-- ssh-add deploy_key
-- git pull github gh-pages
 - git push github gh-pages
 
 # whitelist
