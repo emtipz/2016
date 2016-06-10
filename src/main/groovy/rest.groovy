@@ -120,7 +120,7 @@ allTipz.each{ tipz->
 }
 
  
-def updateDate = new Date().format("yyyy-MM-dd' 'HH:mm:ss")
+def updateDate = new Date().format("yyyy-MM-dd' 'HH:mm:ss", TimeZone.getTimeZone('Europe/Stockholm'))
 def writer = new FileWriter('index.html')
 def src = new groovy.xml.MarkupBuilder(writer)
 src.html {
