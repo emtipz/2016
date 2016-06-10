@@ -50,7 +50,7 @@ new File("users").eachFile() { file->
 	String fileName =  file.getName().split("\\.")[0]
 	Tipz tipz = new Tipz()
 	tipz.userName = fileName
-	def data = parseCsv(file.getText("cp850"))
+	def data = parseCsv(file.getText("cp1252"))
 	int row = 1
 		data.each { line ->
 			if (row > 8 && row < 15) {
