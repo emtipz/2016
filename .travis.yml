@@ -15,6 +15,8 @@ before_script:
 - git config --global user.email "travis@yml.se"
 - git config --global user.name "Travis"
 - git remote -v 
+- git remote remove origin
+- git remote add origin git@github.com:emtipz/2016.git
 
 after_script:
 - git commit -am "updating outputs"
