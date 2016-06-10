@@ -9,12 +9,10 @@ before_install:
 - chmod 600 deploy_key
 - eval `ssh-agent -s`
 - ssh-add deploy_key
-- ssh -T github.com
 
 before_script: 
 - git config --global user.email "travis@yml.se"
 - git config --global user.name "Travis"
-- git remote -v 
 - git remote remove origin
 - git remote add origin git@github.com:emtipz/2016.git
 
