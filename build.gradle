@@ -1,0 +1,21 @@
+apply plugin: 'groovy'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        compile 'com.xlson.groovycsv:groovycsv:1.1'
+		compile group: 'com.github.groovy-wslite', name: 'groovy-wslite', version: '1.1.0'
+		compile group: 'com.xlson.groovycsv', name: 'groovycsv', version: '1.1'
+		compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.6'
+		
+    }
+	
+	task runScript (dependsOn: 'classes', type: JavaExec) {
+		main = 'rest'
+		classpath = sourceSets.main.runtimeClasspath
+	}
+
+	task wrapper(type: Wrapper) {
+		gradleVersion = '2.11'
+	}
