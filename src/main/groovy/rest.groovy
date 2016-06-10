@@ -96,11 +96,14 @@ def addMatchResults(def thisPlayRound, def thisHomeTeam, def thisAwayTeam, def t
 
 def perMatchResult=[:]
 def playerPoints = [:]
+int counter = 1
 allTipz.each{ tipz->
+	
 	tipz.each {
 		def thisUserName = it.userName
 		playerPoints.put(name: thisUserName, 0)
-		println "INFO: Calculating for player: $thisUserName"
+		println "INFO: Calculating for player $counter: $thisUserName"
+		counter++
 		it.results.each{ game->
 			//println "INFO: $game.homeTeam - $game.awayTeam: $game.homeScore - $game.awayScore"
 			// from config we set what games that has been played. 
