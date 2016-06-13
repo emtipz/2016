@@ -105,11 +105,13 @@ allTipz.each{ tipz->
 		println "INFO: Calculating for player $counter: $thisUserName"
 		counter++
 		it.results.each{ game->
-			//println "INFO: $game.homeTeam - $game.awayTeam: $game.homeScore - $game.awayScore"
+			//println "INFO $thisUserName: $game.homeTeam - $game.awayTeam: $game.homeScore - $game.awayScore"
 			// from config we set what games that has been played. 
 			int thisPointz = 0
 			if (game.playRound < config.playedRounds) {
 				thisPointz=Calculator.pointz(game, facit.get(game.playRound))
+				
+		
 				perMatchResult.put(name: thisUserName, round:game.playRound , hometeam: game.homeTeam, awayteam: game.awayTeam,thisPointz )
 				
 				playerPoints.find{it.key.name == thisUserName}.each{it.value += thisPointz}
@@ -119,7 +121,7 @@ allTipz.each{ tipz->
 	}
 }
 
- 
+
 def updateDate = new Date().format("yyyy-MM-dd' 'HH:mm:ss", TimeZone.getTimeZone('Europe/Stockholm'))
 def writer = new FileWriter('index.html')
 def src = new groovy.xml.MarkupBuilder(writer)
@@ -326,10 +328,12 @@ Po‰ngf√∂rdelning slutspel
 	
    static pointz(MatchResult user, MatchResult facit){
 		Integer pointz = 0
-		
+	
 		if (user.matchResult() == facit.matchResult()) {
+		
 			pointz = roundPoint(user.playRound, '1X2')
 			if(user.homeScore == facit.homeScore && user.awayScore == facit.awayScore){
+				
 				pointz += roundPoint(user.playRound, 'score')
 			}
 			

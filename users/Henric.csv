@@ -24,8 +24,8 @@ Grupp C - Tabell,,,,,,,,,,,,,,,,,Grupp D - Tabell,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Grupp C - Spelschema,,,,,,,,,,,,,,,,,Grupp D - Spelschema,,,,,,,,,,,,,
 Spel,Datum,Tid,,Lag,,,,,,,,M?l,,,,,Spel,Datum,Tid,,Lag,,,,,,,,M?l,
-5,12.06.2016,18:00,,Polen,,,:,Nordirland,,,1,:,1,,,,7,12.06.2016,15:00,,       Turkiet,,,:,Kroatien,,,1,:,3
-6,12.06.2016,21:00,,Tyskland,,,:,Ukraina,,,3,:,1,,,,8,12.06.2016,18:00,,Spanien,,,:,Tjeckien,,,2,:,0
+6,12.06.2016,18:00,,Polen,,,:,Nordirland,,,1,:,1,,,,5,12.06.2016,15:00,,       Turkiet,,,:,Kroatien,,,1,:,3
+7,12.06.2016,21:00,,Tyskland,,,:,Ukraina,,,3,:,1,,,,8,12.06.2016,18:00,,Spanien,,,:,Tjeckien,,,2,:,0
 17,16.06.2016,18:00,,Ukraina,,,:,Nordirland,,,1,:,2,,,,19,17.06.2016,18:00,,Tjeckien,,,:,Kroatien,,,2,:,2
 18,16.06.2016,21:00,,Tyskland,,,:,Polen,,,2,:,0,,,,20,17.06.2016,21:00,,Spanien,,,:,Turkiet,,,3,:,0
 29,21.06.2016,21:00,,Ukraina,,,:,Polen,,,1,:,2,,,,31,21.06.2016,21:00,,Kroatien,,,:,Spanien,,,1,:,1
@@ -49,7 +49,7 @@ Spel,Datum,Tid,,Lag,,,,,,,,M?l,,,,,Spel,Datum,Tid,,Lag,,,,,,,,M?l,
 34,22.06.2016,21:00,,Zverige,,,:,Belgien,,,2,:,0,,,,36,22.06.2016,21:00,,Island,,,:,÷sterrike,,,2,:,1
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-"""B?sta treor""-Tabell",,,,,,,,,,,,,,,,,èttondelsfinal,,,,,,,,,,,,,
+"""BÑsta treor""-Tabell",,,,,,,,,,,,,,,,,èttondelsfinal,,,,,,,,,,,,,
 Plats,Land,,Sm,V,O,   F,,,M?l,,Diff,Po?ng,Gruppe,,,,Match,Datum,Tid,,,,,Lag,,,,,M?l,
 1,÷sterrike,,3,1,1,1,,5,:,4,1,4,F,,,,37,25.06.2016,15:00,,Schweiz,,,:,Polen,,,2,:,0
 2,Tjeckien,,3,1,1,1,,4,:,5,-1,4,D,,,,38,25.06.2016,18:00,,Ryssland,,,:,Tjeckien,,,3,:,1
