@@ -424,3 +424,4 @@ class Tipz {
 	String userName
 	List<MatchResult> results = []
 }
+
