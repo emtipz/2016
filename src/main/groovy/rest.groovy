@@ -97,9 +97,29 @@ def perMatchResult=[:]
 def playerPoints = [:]
 int counter = 1
 def searchForEightTeam
+def searchForQurterTeam
+def searchForSemiTeam
+def searchForFinalTeam
+
 allTipz.each{ tipz->
 	
 	tipz.each {
+		searchForEightTeam = it.results.findAll {games -> 
+					games.playRound > 36 && games.playRound < 45 
+		}
+		searchForQurterTeam = it.results.findAll {games -> 
+					games.playRound > 44 && games.playRound < 49 
+		}
+		searchForSemiTeam = it.results.findAll {games -> 
+					games.playRound > 48 && games.playRound < 51 
+		}
+		
+		searchForFinalTeam = it.results.findAll {games -> 
+					games.playRound > 50 && games.playRound < 52 
+		}
+		
+		
+	
 		def thisUserName = it.userName
 		playerPoints.put(name: thisUserName, 0)
 		println "INFO: Calculating for player $counter: $thisUserName"
@@ -116,15 +136,59 @@ allTipz.each{ tipz->
 				
 				playerPoints.find{it.key.name == thisUserName}.each{it.value += thisPointz}
 				
-			} else if (game.playRound > config.playedRounds && game.playRound < 45) {
-				println "INFO: " + facit.get(game.playRound)
-				searchForEightTeam = facit.findAll { key,games -> 
-					games.playRound > 36 && games.playRound < 45 
+			} else if (game.playRound > 36 && game.playRound < 45) { 
+				if (config.playedRounds> 36) {
+					int eighthPointz = 0
+					def eighthGame = facit.get(game.playRound)
+					println "INFO: Calc eighth teams: " + eighthGame
+					
+					eighthPointz=Calculator.pointzEndGames(searchForEightTeam, eighthGame, 'eighth')
+			
+					perMatchResult.put(name: thisUserName, round:game.playRound , hometeam: eighthGame.homeTeam, awayteam: eighthGame.awayTeam,eighthPointz )
+					
+					playerPoints.find{it.key.name == thisUserName}.each{it.value += eighthPointz}
 				}
-				
+			} else if (game.playRound > 44 && game.playRound < 49) {
+				if (config.playedRounds> 44) {
+					int qurterPointz = 0
+					def qurterGame = facit.get(game.playRound)
+					println "INFO: Calc qurter teams: " + qurterGame
+					
+					qurterPointz=Calculator.pointzEndGames(searchForQurterTeam, qurterGame, 'qurter')
+			
+					perMatchResult.put(name: thisUserName, round:game.playRound , hometeam: qurterGame.homeTeam, awayteam: qurterGame.awayTeam,qurterPointz )
+					
+					playerPoints.find{it.key.name == thisUserName}.each{it.value += qurterPointz}
+					}
+			
+			} else if (game.playRound > 48 && game.playRound < 51) {
+				if (config.playedRounds> 48) {
+					int semiPointz = 0
+					def semiGame = facit.get(game.playRound)
+					println "INFO: Calc semifinals teams: " + semiGame
+					
+					qurterPointz=Calculator.pointzEndGames(searchForSemiTeam, semiGame, 'semi')
+			
+					perMatchResult.put(name: thisUserName, round:game.playRound , hometeam: semiGame.homeTeam, awayteam: semiGame.awayTeam,semiPointz )
+					
+					playerPoints.find{it.key.name == thisUserName}.each{it.value += semiPointz}
+				}
+			
+			}else if (game.playRound > 48 && game.playRound < 51) {
+				if (config.playedRounds> 48) {
+					int finalPointz = 0
+					def finalGame = facit.get(game.playRound)
+					println "INFO: Calc final teams: " + finalGame
+					
+					qurterPointz=Calculator.pointzEndGames(searchForSemiTeam, finalGame, 'final')
+			
+					perMatchResult.put(name: thisUserName, round:game.playRound , hometeam: finalGame.homeTeam, awayteam: finalGame.awayTeam,finalPointz )
+					
+					playerPoints.find{it.key.name == thisUserName}.each{it.value += finalPointz}
+				}
 			}
 		}
-		println searchForEightTeam
+		
 		
 	}
 }
@@ -333,7 +397,66 @@ Po�ngfördelning slutspel
 •	Semi - 4p/Lag, 1X2 2p, Resultat 6p
 •	Final - 5p/Lag, 1X2 2p, Resultat 6p
 */
+   static pointzEndGames(List<MatchResult> user, MatchResult facit, String type){
+	Integer pointz = 0
+	Integer gamePointz = 0
+	Integer perGamePointz=0
 	
+	if (type=='eighth') {
+		gamePointz=2
+	} else if (type=='qurter') {
+		gamePointz=3
+	} else if (type=='semi') {
+		gamePointz=4
+	} else {
+		gamePointz=5
+	}
+		user.each {
+			if (it.homeTeam == facit.homeTeam) {
+				pointz +=gamePointz
+			}else if (it.homeTeam == facit.awayTeam) {
+				pointz +=gamePointz
+			}
+			
+			if (it.awayTeam == facit.awayTeam) {
+				pointz +=gamePointz
+			} else if (it.awayTeam == facit.homeTeam) {
+				pointz +=gamePointz
+			}
+			if((it.awayTeam == facit.awayTeam || it.awayTeam == facit.homeTeam) && (it.homeTeam == facit.awayTeam || it.homeTeam == facit.homeTeam)){
+				println "INFO: Correct eighth match: " +  it.homeTeam + ' : ' + it.awayTeam
+				if (it.awayTeam == facit.awayTeam) {
+					if(it.homeScore == facit.homeScore && it.awayScore == facit.awayScore){
+						
+						pointz += 6
+					} else {
+						if (it.matchResult() == facit.matchResult()) {
+							pointz += 2
+						}
+						
+					}
+					
+					
+				} else if (it.awayTeam == facit.homeTeam) {
+					if(it.homeScore == facit.awayScore && it.awayScore == facit.homeScore){
+						pointz += 6
+					} else {
+						if (facit.matchResult() == 'X' && it.matchResult() =='X') {
+							pointz += 2
+						} else if (facit.matchResult() == '1' && it.matchResult() =='2') {
+							pointz += 2
+						} else if (facit.matchResult() == '2' && it.matchResult() =='1') {
+							pointz += 2
+						}
+ 					}
+				}
+			}
+		}
+	
+	
+		return pointz 
+   
+   }
    static pointz(MatchResult user, MatchResult facit){
 		Integer pointz = 0
 	
