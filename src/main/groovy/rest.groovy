@@ -93,10 +93,10 @@ def addMatchResults(def thisPlayRound, def thisHomeTeam, def thisAwayTeam, def t
 		return match
 }
 
-
 def perMatchResult=[:]
 def playerPoints = [:]
 int counter = 1
+def searchForEightTeam
 allTipz.each{ tipz->
 	
 	tipz.each {
@@ -116,8 +116,16 @@ allTipz.each{ tipz->
 				
 				playerPoints.find{it.key.name == thisUserName}.each{it.value += thisPointz}
 				
+			} else if (game.playRound > config.playedRounds && game.playRound < 45) {
+				println "INFO: " + facit.get(game.playRound)
+				searchForEightTeam = facit.findAll { key,games -> 
+					games.playRound > 36 && games.playRound < 45 
+				}
+				
 			}
 		}
+		println searchForEightTeam
+		
 	}
 }
 
@@ -356,7 +364,7 @@ PoängfÃ¶rdelning slutspel
    
    }
    static roundPoint(Integer playRound, String type) {	
-	if (playRound < 36) {
+	if (playRound < 37) {
 		if (type == '1X2') {
 			return 1
 		} else {
@@ -401,6 +409,7 @@ class MatchResult {
 		
 	}
 	
+	
 	String toString(){
 		return  playRound + ' - ' +homeTeam +  " - " + awayTeam + ' : ' + matchResult()
 	}
@@ -423,5 +432,6 @@ class MatchResult {
 class Tipz {
 	String userName
 	List<MatchResult> results = []
+	List team = []
 }
 
