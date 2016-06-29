@@ -66,7 +66,11 @@ new File("users").eachFile() { file->
 				tipz.results.add(addMatchResults(line."Grupp B - Tabell",line.HemmaLag2,line.BortaLag2,line.HemmaScore2,line.BortaScore2))
 			}
 			if (row>52 && row < 61) {
+			
 				tipz.results.add(addMatchResults(line."Grupp B - Tabell",line.HemmaLag2,line.BortaLag2,line.HemmaScore2,line.BortaScore2))
+			}
+			if (row>64 && row < 69) {
+				tipz.results.add(addMatchResults(line."Grupp A - Tabell",line.nannis,line.BortaLag,line.HemmaScore,line.BortaScore))
 			}
 			if (row>64 && row<67) {
 				tipz.results.add(addMatchResults(line."Grupp B - Tabell",line.HemmaLag2,line.BortaLag2,line.HemmaScore2,line.BortaScore2))
@@ -128,6 +132,7 @@ allTipz.each{ tipz->
 			//println "INFO $thisUserName: $game.homeTeam - $game.awayTeam: $game.homeScore - $game.awayScore"
 			// from config we set what games that has been played. 
 			int thisPointz = 0
+			
 			if (game.playRound < config.playedRounds) {
 				thisPointz=Calculator.pointz(game, facit.get(game.playRound))
 				
@@ -136,7 +141,8 @@ allTipz.each{ tipz->
 				
 				playerPoints.find{it.key.name == thisUserName}.each{it.value += thisPointz}
 				
-			} else if (game.playRound > 36 && game.playRound < 45) { 
+			}
+			if (game.playRound > 36 && game.playRound < 45) { 
 				if (config.playedRounds> 36) {
 					int eighthPointz = 0
 					def eighthGame = facit.get(game.playRound)
@@ -149,7 +155,8 @@ allTipz.each{ tipz->
 					playerPoints.find{it.key.name == thisUserName}.each{it.value += eighthPointz}
 				}
 			} else if (game.playRound > 44 && game.playRound < 49) {
-				if (config.playedRounds> 44) {
+			
+				//if (config.playedRounds> 44) {
 					int qurterPointz = 0
 					def qurterGame = facit.get(game.playRound)
 					println "INFO: Calc qurter teams: " + qurterGame
@@ -159,9 +166,10 @@ allTipz.each{ tipz->
 					perMatchResult.put(name: thisUserName, round:game.playRound , hometeam: qurterGame.homeTeam, awayteam: qurterGame.awayTeam,qurterPointz )
 					
 					playerPoints.find{it.key.name == thisUserName}.each{it.value += qurterPointz}
-					}
+					//}
 			
-			} else if (game.playRound > 48 && game.playRound < 51) {
+			} 
+			if (game.playRound > 48 && game.playRound < 51) {
 				if (config.playedRounds> 48) {
 					int semiPointz = 0
 					def semiGame = facit.get(game.playRound)
