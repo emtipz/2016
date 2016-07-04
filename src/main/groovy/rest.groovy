@@ -122,7 +122,7 @@ allTipz.each{ tipz->
 					games.playRound > 50 && games.playRound < 52 
 		}
 		
-		
+		println "INFO Semi: " + searchForSemiTeam
 	
 		def thisUserName = it.userName
 		playerPoints.put(name: thisUserName, 0)
@@ -168,21 +168,21 @@ allTipz.each{ tipz->
 					playerPoints.find{it.key.name == thisUserName}.each{it.value += qurterPointz}
 					//}
 			
-			} 
-			if (game.playRound > 48 && game.playRound < 51) {
-				if (config.playedRounds> 48) {
+			} else if (game.playRound > 48 && game.playRound < 51) {
+				//if (config.playedRounds> 48) {
 					int semiPointz = 0
 					def semiGame = facit.get(game.playRound)
 					println "INFO: Calc semifinals teams: " + semiGame
 					
-					qurterPointz=Calculator.pointzEndGames(searchForSemiTeam, semiGame, 'semi')
+					semiPointz=Calculator.pointzEndGames(searchForSemiTeam, semiGame, 'semi')
 			
 					perMatchResult.put(name: thisUserName, round:game.playRound , hometeam: semiGame.homeTeam, awayteam: semiGame.awayTeam,semiPointz )
 					
 					playerPoints.find{it.key.name == thisUserName}.each{it.value += semiPointz}
-				}
+				//}
 			
-			}else if (game.playRound > 48 && game.playRound < 51) {
+			}
+			if (game.playRound > 48 && game.playRound < 51) {
 				if (config.playedRounds> 48) {
 					int finalPointz = 0
 					def finalGame = facit.get(game.playRound)
