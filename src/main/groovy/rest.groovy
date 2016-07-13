@@ -181,19 +181,18 @@ allTipz.each{ tipz->
 					playerPoints.find{it.key.name == thisUserName}.each{it.value += semiPointz}
 				//}
 			
-			}
-			if (game.playRound > 48 && game.playRound < 51) {
-				if (config.playedRounds> 48) {
+			} else if (game.playRound > 50 && game.playRound < 52) {
+				
 					int finalPointz = 0
 					def finalGame = facit.get(game.playRound)
 					println "INFO: Calc final teams: " + finalGame
 					
-					qurterPointz=Calculator.pointzEndGames(searchForSemiTeam, finalGame, 'final')
+					finalPointz=Calculator.pointzEndGames(searchForFinalTeam, finalGame, 'final')
 			
 					perMatchResult.put(name: thisUserName, round:game.playRound , hometeam: finalGame.homeTeam, awayteam: finalGame.awayTeam,finalPointz )
 					
 					playerPoints.find{it.key.name == thisUserName}.each{it.value += finalPointz}
-				}
+				
 			}
 		}
 		
